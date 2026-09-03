@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   Gift,
-  Package,
   Award,
   CreditCard,
   HelpCircle,
@@ -10,14 +9,12 @@ import {
 } from 'lucide-react';
 
 interface MeProfileViewProps {
-  onOpenBundle: () => void;
-  onOpenEGift: () => void;
+  onOpenBundle?: () => void;
+  onOpenEGift?: () => void;
   onViewOrders: () => void;
 }
 
 export const MeProfileView: React.FC<MeProfileViewProps> = ({
-  onOpenBundle,
-  onOpenEGift,
   onViewOrders,
 }) => {
   return (
@@ -53,31 +50,6 @@ export const MeProfileView: React.FC<MeProfileViewProps> = ({
             <div className="text-[10px] font-black uppercase tracking-wider text-slate-400">Active Passes</div>
           </div>
         </div>
-      </div>
-
-      {/* Package Bundle & eGift Quick Bento Access Tiles */}
-      <div className="grid grid-cols-2 gap-3">
-        <button
-          onClick={onOpenBundle}
-          className="p-4 bg-amber-50 rounded-3xl border-2 border-amber-200 text-left hover:bg-amber-100/70 transition-all group shadow-sm"
-        >
-          <div className="w-9 h-9 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center mb-2.5 shadow-xs group-hover:scale-105 transition-transform border border-amber-300">
-            <Package className="w-4.5 h-4.5" />
-          </div>
-          <h4 className="font-black text-slate-900 text-xs">Drink Bundles</h4>
-          <p className="text-[10px] text-slate-600 font-semibold mt-0.5">10 for $40 · 20 for $75</p>
-        </button>
-
-        <button
-          onClick={onOpenEGift}
-          className="p-4 bg-white rounded-3xl border-2 border-slate-200 text-left hover:bg-slate-50 transition-all group shadow-sm"
-        >
-          <div className="w-9 h-9 rounded-2xl bg-indigo-600 text-white flex items-center justify-center mb-2.5 shadow-xs group-hover:scale-105 transition-transform">
-            <Gift className="w-4.5 h-4.5" />
-          </div>
-          <h4 className="font-black text-slate-900 text-xs">Send eGift</h4>
-          <p className="text-[10px] text-slate-500 font-semibold mt-0.5">To mobile contacts</p>
-        </button>
       </div>
 
       {/* Settings & Options Bento list */}

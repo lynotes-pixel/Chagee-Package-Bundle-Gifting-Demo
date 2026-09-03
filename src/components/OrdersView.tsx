@@ -101,14 +101,14 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
               🧃
             </div>
             <h4 className="font-black text-slate-900 text-sm">No vouchers found</h4>
-            <p className="text-xs text-slate-500 font-medium">
-              Purchase a 10/20 drink package bundle or send an eGift to a friend!
+            <p className="text-xs text-slate-500 font-medium max-w-[260px] mx-auto leading-relaxed">
+              Purchase an item or Package Bundle & eGift to your loved ones.
             </p>
             <button
               onClick={onSendNewGift}
-              className="px-4 py-2 rounded-xl bg-indigo-600 text-white font-black text-xs shadow-sm hover:bg-indigo-700"
+              className="px-4 py-2.5 rounded-xl bg-indigo-600 text-white font-black text-xs shadow-sm hover:bg-indigo-700 cursor-pointer transition-colors"
             >
-              Browse Package Bundles
+              Browse eGift Menu
             </button>
           </div>
         ) : (

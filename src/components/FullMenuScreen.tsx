@@ -885,25 +885,7 @@ export const FullMenuScreen: React.FC<FullMenuScreenProps> = ({
               </div>
 
               {/* Action Buttons: Add to Cart or Send as eGift */}
-              <div className="p-3.5 border-t border-neutral-150 bg-white space-y-2">
-                {/* Secondary reminder if vouchers available but unapplied */}
-                {!isVoucherApplied && (
-                  <div className="flex items-center justify-between text-[10.5px] bg-rose-50/70 border border-rose-200/60 px-2.5 py-1.5 rounded-xl">
-                    <div className="flex items-center gap-1.5 text-neutral-700">
-                      <span className="w-2 h-2 rounded-full bg-[#d93043] animate-ping" />
-                      <span className="font-bold text-[#d93043]">Rewards Available:</span>
-                      <span className="font-medium text-neutral-600">Redeem your vouchers for this order</span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setIsVoucherApplied(true)}
-                      className="font-extrabold text-[#d93043] hover:underline cursor-pointer"
-                    >
-                      Use Voucher →
-                    </button>
-                  </div>
-                )}
-
+              <div className="p-3.5 border-t border-neutral-150 bg-white">
                 {/* Primary Button Bar */}
                 <div className="flex items-center gap-2">
                   <button

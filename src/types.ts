@@ -2,12 +2,20 @@ export interface MenuItem {
   id: string;
   name: string;
   chineseName?: string;
-  category: 'milk-tea' | 'fresh-brew' | 'snow-cap' | 'fruit-tea' | 'bundle' | 'merch';
+  subTitle?: string;
+  category: string;
   price: number;
   originalPrice?: number;
-  rating: number;
+  rating?: number;
   calories?: number;
-  image: string;
+  image?: string;
+  badge?: string;
+  badgeType?: 'bestseller' | 'recommended' | 'new';
+  nutriGrade?: {
+    grade: 'A' | 'B' | 'C' | 'D';
+    sugarPct: string;
+  };
+  ingredientTheme?: 'jasmine' | 'peach' | 'dahongpao' | 'osmanthus' | 'hojicha' | 'lemon' | 'watermelon' | 'cake' | 'deal' | 'tea';
   description: string;
   tags?: string[];
   isBestSeller?: boolean;

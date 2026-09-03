@@ -721,12 +721,12 @@ export const FullMenuScreen: React.FC<FullMenuScreenProps> = ({
                       </div>
                     </div>
 
-                    {/* Prompt User: "Redeem your vouchers for this order" */}
+                    {/* Prompt User: "Use Vouchers for this Order" */}
                     <div className="mt-2 flex items-start justify-between gap-2 bg-white/95 p-2.5 rounded-xl border border-rose-150 shadow-2xs">
                       <div className="flex-1">
                         <div className="flex items-center gap-1.5 text-neutral-900 font-extrabold text-[12px]">
                           <Sparkles className="w-3.5 h-3.5 text-amber-500 fill-amber-400 shrink-0" />
-                          <span>Redeem your vouchers for this order</span>
+                          <span>Use Vouchers for this Order</span>
                         </div>
                         <p className="text-[10.5px] text-neutral-500 mt-0.5 leading-snug">
                           {isVoucherApplied

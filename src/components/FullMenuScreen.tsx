@@ -707,17 +707,10 @@ export const FullMenuScreen: React.FC<FullMenuScreenProps> = ({
                 {/* 4. REWARDS AVAILABLE & VOUCHERS PROMPT */}
                 <div className="pt-2 border-t border-neutral-200/80 space-y-2">
                   <div className="p-3 rounded-2xl bg-gradient-to-r from-rose-50/90 via-amber-50/50 to-rose-50/90 border border-rose-200/80 shadow-xs">
-                    {/* Top Row: "X Vouchers in wallet" in 1 liner followed by "Rewards Available" in 1 liner */}
-                    <div className="flex items-center gap-2">
-                      {/* Vouchers in wallet pill placed BEFORE Rewards Available in 1 liner */}
-                      <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-neutral-800 bg-white/95 px-2.5 py-1 rounded-full border border-neutral-200/80 shadow-2xs whitespace-nowrap shrink-0">
-                        <Ticket className="w-3 h-3 text-[#d93043]" />
-                        <span>{vouchersCount} Vouchers in wallet</span>
-                      </span>
-
-                      {/* Blinking Rewards Available badge in 1 liner */}
+                    {/* Top Row: Blinking Rewards Available badge in 1 liner */}
+                    <div className="flex items-center">
                       <div
-                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10.5px] font-black uppercase tracking-wider bg-[#d93043] text-white animate-reward-blink shadow-xs whitespace-nowrap shrink-0"
+                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10.5px] font-black uppercase tracking-wider bg-[#d93043] text-white animate-reward-blink shadow-xs whitespace-nowrap"
                       >
                         <span className="relative flex h-2 w-2 shrink-0">
                           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-80"></span>

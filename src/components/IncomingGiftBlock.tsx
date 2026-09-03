@@ -35,11 +35,11 @@ export const IncomingGiftBlock: React.FC<IncomingGiftBlockProps> = ({
 
       {/* Main Content Row */}
       <div className="flex items-center gap-3.5 my-2.5">
-        {/* Animated Gift Box Icon */}
+        {/* Animated Gift Box Picture */}
         <motion.div
           animate={{
-            scale: [1, 1.05, 1],
-            rotate: [0, -2, 2, 0],
+            scale: [1, 1.08, 1],
+            rotate: [0, -3, 3, 0],
           }}
           transition={{
             duration: 2.4,
@@ -47,15 +47,12 @@ export const IncomingGiftBlock: React.FC<IncomingGiftBlockProps> = ({
             ease: 'easeInOut',
           }}
           onClick={onOpenUnboxing}
-          className="w-16 h-16 rounded-2xl bg-neutral-900 border-2 border-neutral-800 p-0.5 shadow-sm flex items-center justify-center cursor-pointer shrink-0 group active:scale-95 transition-transform"
+          className="w-14 h-14 flex items-center justify-center cursor-pointer shrink-0 active:scale-95 transition-transform select-none"
           title="Tap to unbox your gift"
         >
-          <div className="w-full h-full rounded-[14px] bg-white flex flex-col items-center justify-center text-center p-1">
-            <span className="text-2xl">🎁</span>
-            <span className="text-[8px] font-black text-indigo-600 uppercase mt-0.5 tracking-tight">
-              {gift.opened ? 'UNLOCKED' : 'TAP OPEN'}
-            </span>
-          </div>
+          <span className="text-4xl leading-none filter drop-shadow-xs select-none">
+            🎁
+          </span>
         </motion.div>
 
         {/* Gift Information */}

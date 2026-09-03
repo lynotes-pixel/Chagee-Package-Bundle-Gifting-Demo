@@ -92,10 +92,10 @@ export const RecipientScreen: React.FC<RecipientScreenProps> = ({
             </div>
 
             <div className="flex items-center gap-4 my-3">
-              {/* Gift Box Icon Container with animated pulse */}
+              {/* Gift Box Picture */}
               <motion.div
                 animate={{
-                  scale: [1, 1.06, 1],
+                  scale: [1, 1.08, 1],
                   rotate: [0, -3, 3, 0],
                 }}
                 transition={{
@@ -104,14 +104,12 @@ export const RecipientScreen: React.FC<RecipientScreenProps> = ({
                   ease: 'easeInOut',
                 }}
                 onClick={onOpenUnboxing}
-                className="w-18 h-18 rounded-2xl bg-slate-900 border-2 border-slate-800 p-0.5 shadow-sm flex items-center justify-center cursor-pointer shrink-0 group"
+                className="w-14 h-14 flex items-center justify-center cursor-pointer shrink-0 active:scale-95 transition-transform select-none"
+                title="Tap to unbox your gift"
               >
-                <div className="w-full h-full rounded-[14px] bg-white flex flex-col items-center justify-center text-center p-1">
-                  <span className="text-2xl">🎁</span>
-                  <span className="text-[9px] font-black text-indigo-600 uppercase mt-0.5">
-                    {gift.opened ? 'UNLOCKED' : 'TAP OPEN'}
-                  </span>
-                </div>
+                <span className="text-4xl leading-none filter drop-shadow-xs select-none">
+                  🎁
+                </span>
               </motion.div>
 
               <div className="flex-1 min-w-0">

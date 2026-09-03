@@ -61,7 +61,6 @@ export const FullMenuScreen: React.FC<FullMenuScreenProps> = ({
   const [showOrderSuccessToast, setShowOrderSuccessToast] = useState<string | null>(null);
 
   // Rewards & Promo Code state for the Order Customization Modal
-  const [allowBlinking, setAllowBlinking] = useState<boolean>(true);
   const [isVoucherApplied, setIsVoucherApplied] = useState<boolean>(false);
   const [selectedVoucherName, setSelectedVoucherName] = useState<string>('10 Regular Drinks Pack Voucher');
   const [showVoucherOptions, setShowVoucherOptions] = useState<boolean>(false);
@@ -708,45 +707,25 @@ export const FullMenuScreen: React.FC<FullMenuScreenProps> = ({
                 {/* 4. REWARDS AVAILABLE & VOUCHERS PROMPT */}
                 <div className="pt-2 border-t border-neutral-200/80 space-y-2">
                   <div className="p-3 rounded-2xl bg-gradient-to-r from-rose-50/90 via-amber-50/50 to-rose-50/90 border border-rose-200/80 shadow-xs">
-                    {/* Top Row: Blinking "Rewards Available" Badge and Blinking Control Toggle */}
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-2">
-                        {/* Blinking Badge */}
-                        <div
-                          className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider transition-all ${
-                            allowBlinking
-                              ? 'bg-[#d93043] text-white animate-reward-blink shadow-xs'
-                              : 'bg-rose-100 text-[#d93043] border border-rose-200'
-                          }`}
-                        >
-                          <span className="relative flex h-2 w-2">
-                            {allowBlinking && (
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-80"></span>
-                            )}
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
-                          </span>
-                          <Gift className="w-3 h-3 stroke-[2.5]" />
-                          <span>Rewards Available</span>
-                        </div>
+                    {/* Top Row: "X Vouchers in wallet" in 1 liner followed by "Rewards Available" in 1 liner */}
+                    <div className="flex items-center gap-2">
+                      {/* Vouchers in wallet pill placed BEFORE Rewards Available in 1 liner */}
+                      <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-neutral-800 bg-white/95 px-2.5 py-1 rounded-full border border-neutral-200/80 shadow-2xs whitespace-nowrap shrink-0">
+                        <Ticket className="w-3 h-3 text-[#d93043]" />
+                        <span>{vouchersCount} Vouchers in wallet</span>
+                      </span>
 
-                        {/* Available Vouchers Count */}
-                        <span className="text-[10px] font-bold text-neutral-600 bg-white/90 px-2 py-0.5 rounded-full border border-neutral-200/70">
-                          {vouchersCount} in Wallet
-                        </span>
-                      </div>
-
-                      {/* Allow blinking toggle switch */}
-                      <button
-                        type="button"
-                        onClick={() => setAllowBlinking(!allowBlinking)}
-                        className="text-[9.5px] font-bold text-neutral-500 hover:text-neutral-800 flex items-center gap-1 px-1.5 py-0.5 rounded hover:bg-white/70 transition-colors"
-                        title="Allow blinking animation of Rewards Available"
+                      {/* Blinking Rewards Available badge in 1 liner */}
+                      <div
+                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10.5px] font-black uppercase tracking-wider bg-[#d93043] text-white animate-reward-blink shadow-xs whitespace-nowrap shrink-0"
                       >
-                        <span>Blink:</span>
-                        <span className={allowBlinking ? 'text-[#d93043] font-black' : 'text-neutral-400'}>
-                          {allowBlinking ? 'ON' : 'OFF'}
+                        <span className="relative flex h-2 w-2 shrink-0">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-80"></span>
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
                         </span>
-                      </button>
+                        <Gift className="w-3 h-3 stroke-[2.5] shrink-0" />
+                        <span className="whitespace-nowrap">Rewards Available</span>
+                      </div>
                     </div>
 
                     {/* Prompt User: "Redeem your vouchers for this order" */}
@@ -942,11 +921,7 @@ export const FullMenuScreen: React.FC<FullMenuScreenProps> = ({
                 {!isVoucherApplied && (
                   <div className="flex items-center justify-between text-[10.5px] bg-rose-50/70 border border-rose-200/60 px-2.5 py-1.5 rounded-xl">
                     <div className="flex items-center gap-1.5 text-neutral-700">
-                      <span
-                        className={`w-2 h-2 rounded-full bg-[#d93043] ${
-                          allowBlinking ? 'animate-ping' : ''
-                        }`}
-                      />
+                      <span className="w-2 h-2 rounded-full bg-[#d93043] animate-ping" />
                       <span className="font-bold text-[#d93043]">Rewards Available:</span>
                       <span className="font-medium text-neutral-600">Redeem your vouchers for this order</span>
                     </div>

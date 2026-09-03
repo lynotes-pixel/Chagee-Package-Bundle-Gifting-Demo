@@ -247,16 +247,16 @@ export default function App() {
 
       {/* Main App Container (Mobile Frame or Clean Responsive View) */}
       <main
-        className={`w-full transition-all duration-300 ${
+        className={`w-full transition-all duration-300 flex flex-col ${
           isPhoneFrame
-            ? 'max-w-[430px] my-4 sm:my-6 rounded-[44px] shadow-2xl overflow-hidden border-[8px] border-slate-800 bg-slate-50 min-h-[850px] relative'
-            : 'max-w-2xl my-0 sm:my-4 bg-slate-50 min-h-screen relative shadow-lg'
+            ? 'max-w-[420px] h-[844px] max-h-[calc(100vh-60px)] my-2 sm:my-4 rounded-[44px] shadow-2xl overflow-hidden border-[8px] border-slate-800 bg-slate-50 relative'
+            : 'max-w-md my-0 sm:my-4 bg-slate-50 min-h-screen relative shadow-lg'
         }`}
       >
         {/* Dynamic Island / Top Speaker Bar for Mobile Frame */}
         {isPhoneFrame && (
-          <div className="bg-slate-900 h-7 w-full flex items-center justify-between px-6 text-white text-[11px] font-bold select-none z-30 relative">
-            <span>3:05</span>
+          <div className="bg-slate-900 h-8 w-full flex items-center justify-between px-7 text-white text-[11px] font-bold select-none z-30 shrink-0">
+            <span>9:41</span>
             <div className="w-24 h-4 bg-black rounded-full mx-auto" />
             <div className="flex items-center gap-1.5 text-xs">
               <span className="text-[10px]">5G</span>
@@ -266,8 +266,8 @@ export default function App() {
           </div>
         )}
 
-        {/* UNIFIED CHAGEE APP VIEW (Sender and Recipient share identical UI, with Incoming Gift Block in Recipient view) */}
-        <div className="bg-slate-50 min-h-full">
+        {/* UNIFIED CHAGEE APP SCROLLABLE CONTENT (Sender and Recipient share identical UI) */}
+        <div className="flex-1 overflow-y-auto overscroll-contain bg-slate-50 flex flex-col">
           {activeTab === 'home' && (
             <>
               {/* Header Banner with Profile & Bes-Tea BrewCrew Banner */}
@@ -372,14 +372,15 @@ export default function App() {
               onViewOrders={() => setActiveTab('orders')}
             />
           )}
-
-          {/* Bottom Navigation Bar */}
-          <BottomNavBar
-            activeTab={activeTab}
-            onChangeTab={setActiveTab}
-            ordersBadgeCount={giftsList.length}
-          />
         </div>
+
+        {/* Embedded Bottom Navigation Bar within mobile frame */}
+        <BottomNavBar
+          activeTab={activeTab}
+          onChangeTab={setActiveTab}
+          ordersBadgeCount={giftsList.length}
+          isPhoneFrame={isPhoneFrame}
+        />
       </main>
 
       {/* ================= MODALS & OVERLAYS ================= */}

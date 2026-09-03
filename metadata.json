@@ -1,0 +1,8 @@
+{
+  "name": "CHAGEE Tea & eGift",
+  "description": "CHAGEE mobile tea app featuring Package Drink Bundles, mobile contact list eGifting, interactive unboxing, and in-store voucher redemption.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

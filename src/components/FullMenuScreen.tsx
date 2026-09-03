@@ -13,8 +13,13 @@ import {
   X,
   Gift,
   Search,
+  Tag,
+  Ticket,
+  Percent,
+  Flame,
+  CheckCircle2,
 } from 'lucide-react';
-import { MenuItem } from '../types';
+import { MenuItem, GiftTransaction } from '../types';
 import { MENU_ITEMS } from '../data/menuData';
 import { ChageeCupVisual } from './ChageeCupVisual';
 
@@ -22,6 +27,9 @@ interface FullMenuScreenProps {
   onOpenBundle: () => void;
   onOpenEGift: () => void;
   onQuickGiftDrink: (drink: MenuItem) => void;
+  vouchersCount?: number;
+  giftsList?: GiftTransaction[];
+  onUseVoucher?: () => void;
 }
 
 interface CartItem {
@@ -30,12 +38,18 @@ interface CartItem {
   sugar: string;
   ice: string;
   quantity: number;
+  voucherApplied?: boolean;
+  promoApplied?: string;
+  originalPrice?: number;
 }
 
 export const FullMenuScreen: React.FC<FullMenuScreenProps> = ({
   onOpenBundle,
   onOpenEGift,
   onQuickGiftDrink,
+  vouchersCount = 7,
+  giftsList = [],
+  onUseVoucher,
 }) => {
   const [orderType, setOrderType] = useState<'DELIVERY' | 'PICKUP'>('DELIVERY');
   const [activeCategory, setActiveCategory] = useState<string>('milk-tea');
@@ -45,6 +59,20 @@ export const FullMenuScreen: React.FC<FullMenuScreenProps> = ({
   const [selectedIce, setSelectedIce] = useState<string>('Less Ice');
   const [cart, setCart] = useState<CartItem[]>([]);
   const [showOrderSuccessToast, setShowOrderSuccessToast] = useState<string | null>(null);
+
+  // Rewards & Promo Code state for the Order Customization Modal
+  const [allowBlinking, setAllowBlinking] = useState<boolean>(true);
+  const [isVoucherApplied, setIsVoucherApplied] = useState<boolean>(false);
+  const [selectedVoucherName, setSelectedVoucherName] = useState<string>('10 Regular Drinks Pack Voucher');
+  const [showVoucherOptions, setShowVoucherOptions] = useState<boolean>(false);
+  const [promoCodeInput, setPromoCodeInput] = useState<string>('');
+  const [appliedPromo, setAppliedPromo] = useState<{
+    code: string;
+    discountPct?: number;
+    discountAmount?: number;
+    description: string;
+  } | null>(null);
+  const [promoMessage, setPromoMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
   // Categories corresponding to the left sidebar in the reference screenshot
   const categories = [
@@ -144,11 +172,92 @@ export const FullMenuScreen: React.FC<FullMenuScreenProps> = ({
     setSelectedSize('Regular');
     setSelectedSugar('50% (Standard)');
     setSelectedIce('Less Ice');
+    setIsVoucherApplied(false);
+    setShowVoucherOptions(false);
+    setPromoCodeInput('');
+    setAppliedPromo(null);
+    setPromoMessage(null);
+  };
+
+  // Pricing calculations for currently customized item
+  const basePrice = customizingItem ? customizingItem.price : 0;
+  const sizeAddon = selectedSize === 'Large' ? 0.8 : 0;
+  const standardTotal = basePrice + sizeAddon;
+
+  let voucherDiscount = 0;
+  if (isVoucherApplied) {
+    // Voucher covers the regular base price of the drink
+    voucherDiscount = basePrice;
+  }
+
+  let promoDiscount = 0;
+  if (appliedPromo) {
+    if (appliedPromo.discountPct) {
+      promoDiscount = (standardTotal - voucherDiscount) * (appliedPromo.discountPct / 100);
+    } else if (appliedPromo.discountAmount) {
+      promoDiscount = Math.min(standardTotal - voucherDiscount, appliedPromo.discountAmount);
+    }
+  }
+
+  const finalDrinkPrice = Math.max(0, standardTotal - voucherDiscount - promoDiscount);
+
+  const handleApplyPromo = () => {
+    const trimmed = promoCodeInput.trim().toUpperCase();
+    if (!trimmed) {
+      setPromoMessage({ text: 'Please enter a promo code', type: 'error' });
+      return;
+    }
+
+    if (trimmed === 'BESTEA10') {
+      setAppliedPromo({
+        code: 'BESTEA10',
+        discountPct: 10,
+        description: '10% off order',
+      });
+      setPromoMessage({ text: 'Promo code "BESTEA10" applied! (10% OFF)', type: 'success' });
+    } else if (trimmed === 'WELCOME') {
+      setAppliedPromo({
+        code: 'WELCOME',
+        discountAmount: 1.5,
+        description: '$1.50 off your order',
+      });
+      setPromoMessage({ text: 'Promo code "WELCOME" applied! (-$1.50)', type: 'success' });
+    } else if (trimmed === 'CHAGEE50') {
+      setAppliedPromo({
+        code: 'CHAGEE50',
+        discountPct: 50,
+        description: '50% off drink order',
+      });
+      setPromoMessage({ text: 'Promo code "CHAGEE50" applied! (50% OFF)', type: 'success' });
+    } else if (trimmed === 'FREE') {
+      setAppliedPromo({
+        code: 'FREE',
+        discountPct: 100,
+        description: '100% Free Drink Code',
+      });
+      setPromoMessage({ text: 'Promo code "FREE" applied! (100% OFF)', type: 'success' });
+    } else {
+      setAppliedPromo({
+        code: trimmed,
+        discountAmount: 1.0,
+        description: '$1.00 off order',
+      });
+      setPromoMessage({ text: `Promo code "${trimmed}" applied! (-$1.00)`, type: 'success' });
+    }
+  };
+
+  const handleRemovePromo = () => {
+    setAppliedPromo(null);
+    setPromoCodeInput('');
+    setPromoMessage(null);
   };
 
   const handleAddToCart = () => {
     if (!customizingItem) return;
-    const finalPrice = selectedSize === 'Large' ? customizingItem.price + 0.8 : customizingItem.price;
+
+    if (isVoucherApplied && onUseVoucher) {
+      onUseVoucher();
+    }
 
     setCart((prev) => {
       const existing = prev.find(
@@ -156,7 +265,9 @@ export const FullMenuScreen: React.FC<FullMenuScreenProps> = ({
           c.item.id === customizingItem.id &&
           c.size === selectedSize &&
           c.sugar === selectedSugar &&
-          c.ice === selectedIce
+          c.ice === selectedIce &&
+          c.voucherApplied === isVoucherApplied &&
+          c.promoApplied === appliedPromo?.code
       );
       if (existing) {
         return prev.map((c) =>
@@ -166,18 +277,27 @@ export const FullMenuScreen: React.FC<FullMenuScreenProps> = ({
       return [
         ...prev,
         {
-          item: { ...customizingItem, price: finalPrice },
+          item: { ...customizingItem, price: finalDrinkPrice },
           size: selectedSize,
           sugar: selectedSugar,
           ice: selectedIce,
           quantity: 1,
+          voucherApplied: isVoucherApplied,
+          promoApplied: appliedPromo?.code,
+          originalPrice: standardTotal,
         },
       ];
     });
 
     const itemName = customizingItem.name;
     setCustomizingItem(null);
-    setShowOrderSuccessToast(`Added ${itemName} to cart`);
+    setShowOrderSuccessToast(
+      isVoucherApplied
+        ? `Added ${itemName} with Voucher ($${finalDrinkPrice.toFixed(2)})`
+        : appliedPromo
+        ? `Added ${itemName} with Promo ${appliedPromo.code} ($${finalDrinkPrice.toFixed(2)})`
+        : `Added ${itemName} to cart`
+    );
     setTimeout(() => setShowOrderSuccessToast(null), 2500);
   };
 
@@ -584,35 +704,299 @@ export const FullMenuScreen: React.FC<FullMenuScreenProps> = ({
                     ))}
                   </div>
                 </div>
+
+                {/* 4. REWARDS AVAILABLE & VOUCHERS PROMPT */}
+                <div className="pt-2 border-t border-neutral-200/80 space-y-2">
+                  <div className="p-3 rounded-2xl bg-gradient-to-r from-rose-50/90 via-amber-50/50 to-rose-50/90 border border-rose-200/80 shadow-xs">
+                    {/* Top Row: Blinking "Rewards Available" Badge and Blinking Control Toggle */}
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        {/* Blinking Badge */}
+                        <div
+                          className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider transition-all ${
+                            allowBlinking
+                              ? 'bg-[#d93043] text-white animate-reward-blink shadow-xs'
+                              : 'bg-rose-100 text-[#d93043] border border-rose-200'
+                          }`}
+                        >
+                          <span className="relative flex h-2 w-2">
+                            {allowBlinking && (
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-80"></span>
+                            )}
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                          </span>
+                          <Gift className="w-3 h-3 stroke-[2.5]" />
+                          <span>Rewards Available</span>
+                        </div>
+
+                        {/* Available Vouchers Count */}
+                        <span className="text-[10px] font-bold text-neutral-600 bg-white/90 px-2 py-0.5 rounded-full border border-neutral-200/70">
+                          {vouchersCount} in Wallet
+                        </span>
+                      </div>
+
+                      {/* Allow blinking toggle switch */}
+                      <button
+                        type="button"
+                        onClick={() => setAllowBlinking(!allowBlinking)}
+                        className="text-[9.5px] font-bold text-neutral-500 hover:text-neutral-800 flex items-center gap-1 px-1.5 py-0.5 rounded hover:bg-white/70 transition-colors"
+                        title="Allow blinking animation of Rewards Available"
+                      >
+                        <span>Blink:</span>
+                        <span className={allowBlinking ? 'text-[#d93043] font-black' : 'text-neutral-400'}>
+                          {allowBlinking ? 'ON' : 'OFF'}
+                        </span>
+                      </button>
+                    </div>
+
+                    {/* Prompt User: "Redeem your vouchers for this order" */}
+                    <div className="mt-2 flex items-start justify-between gap-2 bg-white/95 p-2.5 rounded-xl border border-rose-150 shadow-2xs">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-1.5 text-neutral-900 font-extrabold text-[12px]">
+                          <Sparkles className="w-3.5 h-3.5 text-amber-500 fill-amber-400 shrink-0" />
+                          <span>Redeem your vouchers for this order</span>
+                        </div>
+                        <p className="text-[10.5px] text-neutral-500 mt-0.5 leading-snug">
+                          {isVoucherApplied
+                            ? `✓ Applied: ${selectedVoucherName} (-$${voucherDiscount.toFixed(2)})`
+                            : `You have ${vouchersCount} vouchers available. Tap Redeem to claim a free drink!`}
+                        </p>
+                      </div>
+
+                      {/* Redeem Action Button */}
+                      {isVoucherApplied ? (
+                        <button
+                          type="button"
+                          onClick={() => setIsVoucherApplied(false)}
+                          className="shrink-0 px-2.5 py-1 text-[11px] font-bold text-neutral-600 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-colors cursor-pointer"
+                        >
+                          Remove
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => setIsVoucherApplied(true)}
+                          className="shrink-0 px-3 py-1.5 text-[11px] font-black text-white bg-[#d93043] hover:bg-[#c2283a] active:scale-95 rounded-lg shadow-xs transition-all flex items-center gap-1 cursor-pointer"
+                        >
+                          <Check className="w-3 h-3 stroke-[2.5]" />
+                          <span>Redeem</span>
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Voucher switcher trigger */}
+                    <div className="mt-1.5 flex items-center justify-between text-[10px] px-0.5 text-neutral-500">
+                      <button
+                        type="button"
+                        onClick={() => setShowVoucherOptions(!showVoucherOptions)}
+                        className="text-[#0e274d] font-bold hover:underline flex items-center gap-0.5 cursor-pointer"
+                      >
+                        <span>Choose voucher ({selectedVoucherName})</span>
+                        <ChevronRight
+                          className={`w-3 h-3 transition-transform ${
+                            showVoucherOptions ? 'rotate-90' : ''
+                          }`}
+                        />
+                      </button>
+                      {isVoucherApplied && (
+                        <span className="text-emerald-700 font-extrabold flex items-center gap-1 text-[10px]">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                          <span>100% Free Regular Drink</span>
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Expandable Voucher Selection List */}
+                    {showVoucherOptions && (
+                      <div className="mt-2 space-y-1.5 pt-1.5 border-t border-rose-200/60">
+                        {[
+                          { name: '10 Regular Drinks Pack Voucher', note: '7 Remaining in Pack' },
+                          { name: 'Tea Lovers Member Reward', note: 'Single-use · Valid 30 days' },
+                          { name: 'Welcome Gift Free Drink Voucher', note: 'Singapore Outlets' },
+                        ].map((v) => (
+                          <div
+                            key={v.name}
+                            onClick={() => {
+                              setSelectedVoucherName(v.name);
+                              setIsVoucherApplied(true);
+                              setShowVoucherOptions(false);
+                            }}
+                            className={`p-2 rounded-xl text-[11px] cursor-pointer border flex items-center justify-between transition-all ${
+                              selectedVoucherName === v.name && isVoucherApplied
+                                ? 'bg-rose-100/80 border-[#d93043] font-bold text-[#d93043]'
+                                : 'bg-white border-neutral-200 text-neutral-700 hover:bg-neutral-50'
+                            }`}
+                          >
+                            <div className="flex items-center gap-1.5">
+                              <Ticket className="w-3.5 h-3.5 text-[#d93043] shrink-0" />
+                              <span className="font-semibold">{v.name}</span>
+                            </div>
+                            <span className="text-[10px] text-neutral-400 font-mono">
+                              {v.note}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* 5. PROMO CODE FIELD */}
+                <div className="space-y-1.5 pt-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-neutral-800 text-[11px] uppercase tracking-wider flex items-center gap-1">
+                      <Tag className="w-3 h-3 text-neutral-500" />
+                      Promo Code
+                    </span>
+                    {appliedPromo && (
+                      <button
+                        type="button"
+                        onClick={handleRemovePromo}
+                        className="text-[10px] font-bold text-rose-600 hover:underline cursor-pointer"
+                      >
+                        Remove ({appliedPromo.code})
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Promo Code Input Box and Apply Button */}
+                  <div className="flex items-center gap-2">
+                    <div className="relative flex-1">
+                      <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
+                        <Ticket className="w-3.5 h-3.5 text-neutral-400" />
+                      </div>
+                      <input
+                        type="text"
+                        value={promoCodeInput}
+                        onChange={(e) => {
+                          setPromoCodeInput(e.target.value.toUpperCase());
+                          if (promoMessage) setPromoMessage(null);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            handleApplyPromo();
+                          }
+                        }}
+                        placeholder="Enter promo code (e.g. BESTEA10)"
+                        className="w-full pl-8 pr-3 py-2 bg-neutral-50 border border-neutral-200 rounded-xl text-xs font-medium text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:border-[#0e274d] focus:bg-white transition-all uppercase"
+                      />
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={handleApplyPromo}
+                      className="px-3.5 py-2 rounded-xl bg-[#0e274d] text-white font-bold text-xs hover:bg-[#153a70] active:scale-95 transition-all shadow-xs shrink-0 cursor-pointer"
+                    >
+                      Apply
+                    </button>
+                  </div>
+
+                  {/* Quick Suggested Promo Chips */}
+                  <div className="flex items-center gap-1.5 pt-0.5 flex-wrap">
+                    <span className="text-[10px] text-neutral-400 font-medium">Try:</span>
+                    {[
+                      { code: 'BESTEA10', label: '10% OFF' },
+                      { code: 'WELCOME', label: '$1.50 OFF' },
+                      { code: 'CHAGEE50', label: '50% OFF' },
+                    ].map((chip) => (
+                      <button
+                        key={chip.code}
+                        type="button"
+                        onClick={() => {
+                          setPromoCodeInput(chip.code);
+                          if (chip.code === 'BESTEA10') {
+                            setAppliedPromo({ code: 'BESTEA10', discountPct: 10, description: '10% off' });
+                            setPromoMessage({ text: 'Promo "BESTEA10" applied! (10% OFF)', type: 'success' });
+                          } else if (chip.code === 'WELCOME') {
+                            setAppliedPromo({ code: 'WELCOME', discountAmount: 1.5, description: '$1.50 off' });
+                            setPromoMessage({ text: 'Promo "WELCOME" applied! (-$1.50)', type: 'success' });
+                          } else if (chip.code === 'CHAGEE50') {
+                            setAppliedPromo({ code: 'CHAGEE50', discountPct: 50, description: '50% off' });
+                            setPromoMessage({ text: 'Promo "CHAGEE50" applied! (50% OFF)', type: 'success' });
+                          }
+                        }}
+                        className="px-2 py-0.5 rounded-md bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-[9.5px] font-bold transition-colors cursor-pointer"
+                      >
+                        {chip.code} ({chip.label})
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Promo Message */}
+                  {promoMessage && (
+                    <p
+                      className={`text-[10.5px] font-bold mt-1 ${
+                        promoMessage.type === 'success' ? 'text-emerald-600' : 'text-rose-600'
+                      }`}
+                    >
+                      {promoMessage.text}
+                    </p>
+                  )}
+                </div>
               </div>
 
               {/* Action Buttons: Add to Cart or Send as eGift */}
-              <div className="p-3.5 border-t border-neutral-150 bg-white flex items-center gap-2">
-                <button
-                  onClick={() => {
-                    const item = customizingItem;
-                    setCustomizingItem(null);
-                    onQuickGiftDrink(item);
-                  }}
-                  className="px-3.5 py-2.5 rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 font-bold text-xs flex items-center justify-center gap-1.5 border border-rose-200/70 transition-colors"
-                >
-                  <Gift className="w-3.5 h-3.5" />
-                  <span>Send eGift</span>
-                </button>
+              <div className="p-3.5 border-t border-neutral-150 bg-white space-y-2">
+                {/* Secondary reminder if vouchers available but unapplied */}
+                {!isVoucherApplied && (
+                  <div className="flex items-center justify-between text-[10.5px] bg-rose-50/70 border border-rose-200/60 px-2.5 py-1.5 rounded-xl">
+                    <div className="flex items-center gap-1.5 text-neutral-700">
+                      <span
+                        className={`w-2 h-2 rounded-full bg-[#d93043] ${
+                          allowBlinking ? 'animate-ping' : ''
+                        }`}
+                      />
+                      <span className="font-bold text-[#d93043]">Rewards Available:</span>
+                      <span className="font-medium text-neutral-600">Redeem your vouchers for this order</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsVoucherApplied(true)}
+                      className="font-extrabold text-[#d93043] hover:underline cursor-pointer"
+                    >
+                      Use Voucher →
+                    </button>
+                  </div>
+                )}
 
-                <button
-                  onClick={handleAddToCart}
-                  className="flex-1 py-2.5 px-4 rounded-xl bg-[#0e274d] text-white hover:bg-[#123366] font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2"
-                >
-                  <span>Add to Order</span>
-                  <span className="text-white/80 font-mono">
-                    ($
-                    {(
-                      customizingItem.price + (selectedSize === 'Large' ? 0.8 : 0)
-                    ).toFixed(2)}
-                    )
-                  </span>
-                </button>
+                {/* Primary Button Bar */}
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      const item = customizingItem;
+                      setCustomizingItem(null);
+                      onQuickGiftDrink(item);
+                    }}
+                    className="px-3.5 py-2.5 rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 font-bold text-xs flex items-center justify-center gap-1.5 border border-rose-200/70 transition-colors cursor-pointer"
+                  >
+                    <Gift className="w-3.5 h-3.5" />
+                    <span>Send eGift</span>
+                  </button>
+
+                  <button
+                    onClick={handleAddToCart}
+                    className="flex-1 py-2.5 px-4 rounded-xl bg-[#0e274d] text-white hover:bg-[#123366] font-bold text-xs shadow-md active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <span>Add to Order</span>
+                    {isVoucherApplied && finalDrinkPrice === 0 ? (
+                      <span className="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold text-[11px]">
+                        FREE (Voucher)
+                      </span>
+                    ) : (
+                      <div className="flex items-center gap-1 font-mono text-white/90">
+                        {(voucherDiscount > 0 || promoDiscount > 0) && (
+                          <span className="line-through text-white/50 text-[10px]">
+                            ${standardTotal.toFixed(2)}
+                          </span>
+                        )}
+                        <span className="font-black text-white">
+                          (${finalDrinkPrice.toFixed(2)})
+                        </span>
+                      </div>
+                    )}
+                  </button>
+                </div>
               </div>
             </motion.div>
           </div>

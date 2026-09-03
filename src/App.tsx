@@ -345,6 +345,11 @@ export default function App() {
               onQuickGiftDrink={(drink) => {
                 setIsEGiftModalOpen(true);
               }}
+              vouchersCount={vouchersCount}
+              giftsList={giftsList}
+              onUseVoucher={() => {
+                setVouchersCount((prev) => Math.max(0, prev - 1));
+              }}
             />
           )}
 

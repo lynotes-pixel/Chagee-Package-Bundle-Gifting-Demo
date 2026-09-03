@@ -16,3 +16,20 @@
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+@keyframes reward-glow-blink {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(228, 91, 120, 0.45);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(0.97);
+    box-shadow: 0 0 0 5px rgba(228, 91, 120, 0);
+  }
+}
+
+.animate-reward-blink {
+  animation: reward-glow-blink 1.2s ease-in-out infinite;
+}

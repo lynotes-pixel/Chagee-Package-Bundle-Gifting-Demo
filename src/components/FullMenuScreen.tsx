@@ -871,37 +871,6 @@ export const FullMenuScreen: React.FC<FullMenuScreenProps> = ({
                     </button>
                   </div>
 
-                  {/* Quick Suggested Promo Chips */}
-                  <div className="flex items-center gap-1.5 pt-0.5 flex-wrap">
-                    <span className="text-[10px] text-neutral-400 font-medium">Try:</span>
-                    {[
-                      { code: 'BESTEA10', label: '10% OFF' },
-                      { code: 'WELCOME', label: '$1.50 OFF' },
-                      { code: 'CHAGEE50', label: '50% OFF' },
-                    ].map((chip) => (
-                      <button
-                        key={chip.code}
-                        type="button"
-                        onClick={() => {
-                          setPromoCodeInput(chip.code);
-                          if (chip.code === 'BESTEA10') {
-                            setAppliedPromo({ code: 'BESTEA10', discountPct: 10, description: '10% off' });
-                            setPromoMessage({ text: 'Promo "BESTEA10" applied! (10% OFF)', type: 'success' });
-                          } else if (chip.code === 'WELCOME') {
-                            setAppliedPromo({ code: 'WELCOME', discountAmount: 1.5, description: '$1.50 off' });
-                            setPromoMessage({ text: 'Promo "WELCOME" applied! (-$1.50)', type: 'success' });
-                          } else if (chip.code === 'CHAGEE50') {
-                            setAppliedPromo({ code: 'CHAGEE50', discountPct: 50, description: '50% off' });
-                            setPromoMessage({ text: 'Promo "CHAGEE50" applied! (50% OFF)', type: 'success' });
-                          }
-                        }}
-                        className="px-2 py-0.5 rounded-md bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-[9.5px] font-bold transition-colors cursor-pointer"
-                      >
-                        {chip.code} ({chip.label})
-                      </button>
-                    ))}
-                  </div>
-
                   {/* Promo Message */}
                   {promoMessage && (
                     <p

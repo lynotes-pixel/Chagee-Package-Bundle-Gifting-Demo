@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
-import { Gift, Package, Store, Sparkles } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Gift, Package, Store, Sparkles, Send, CheckCircle2 } from 'lucide-react';
 import { GiftTransaction } from '../types';
 
 interface OrdersViewProps {
@@ -17,6 +17,14 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
   onSendNewGift,
 }) => {
   const [filter, setFilter] = useState<'all' | 'bundles' | 'egifts'>('all');
+  const [resentToast, setResentToast] = useState<string | null>(null);
+
+  const handleResendNotification = (gift: GiftTransaction) => {
+    setResentToast(`eGift notification resent to ${gift.recipientName} (${gift.recipientPhone})!`);
+    setTimeout(() => {
+      setResentToast(null);
+    }, 3500);
+  };
 
   const filteredGifts = giftsList.filter((g) => {
     if (filter === 'bundles') return g.itemType === 'bundle';
@@ -25,7 +33,22 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
   });
 
   return (
-    <div className="p-4 space-y-4 pb-24">
+    <div className="p-4 space-y-4 pb-24 relative">
+      {/* Toast feedback when eGift notification is resent */}
+      <AnimatePresence>
+        {resentToast && (
+          <motion.div
+            initial={{ opacity: 0, y: -15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white px-4 py-2.5 rounded-2xl shadow-xl text-xs font-bold flex items-center gap-2 border border-slate-700 max-w-[90vw]"
+          >
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span className="truncate">{resentToast}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Header Bento Tile */}
       <div className="bg-white rounded-3xl p-4 sm:p-5 border-2 border-slate-200 shadow-sm flex items-center justify-between gap-3">
         <div>
@@ -140,9 +163,6 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                   </p>
 
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="text-xs font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
-                      {gift.remainingVouchers} of {gift.totalVouchers} vouchers left
-                    </span>
                     <span className="text-xs font-black text-slate-900">
                       ${gift.price.toFixed(2)}
                     </span>
@@ -155,23 +175,27 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                 "{gift.customMessage}"
               </div>
 
-              {/* Actions */}
-              <div className="flex gap-2 pt-1">
-                <button
-                  onClick={() => onOpenUnboxing(gift)}
-                  className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-900 font-black text-xs flex items-center justify-center gap-1.5 transition-colors border border-slate-200"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                  <span>Preview Recipient Card</span>
-                </button>
-
-                <button
-                  onClick={() => onOpenStoreRedeem(gift)}
-                  className="py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-black text-xs flex items-center justify-center gap-1.5 transition-colors border border-slate-700"
-                >
-                  <Store className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Redeem in Store</span>
-                </button>
+              {/* Actions: Package Pack sent to recipient cannot be redeemed in store by sender */}
+              <div className="pt-1">
+                {gift.recipientName && gift.recipientName !== 'Myself' ? (
+                  <button
+                    type="button"
+                    onClick={() => handleResendNotification(gift)}
+                    className="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-black text-xs flex items-center justify-center gap-2 transition-colors border border-slate-800 whitespace-nowrap shadow-xs cursor-pointer"
+                  >
+                    <Send className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    <span className="whitespace-nowrap">Resend eGift Notification</span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => onOpenStoreRedeem(gift)}
+                    className="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-black text-xs flex items-center justify-center gap-1.5 transition-colors border border-slate-700 cursor-pointer"
+                  >
+                    <Store className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    <span>Redeem in Store</span>
+                  </button>
+                )}
               </div>
             </motion.div>
           ))

@@ -135,9 +135,6 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                       ? 'Points Reward'
                       : 'eGift Item'}
                   </span>
-                  <span className="font-mono text-xs font-black text-slate-500 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200">
-                    {gift.giftCode}
-                  </span>
                 </div>
                 <span className="text-[11px] font-bold text-slate-400">
                   {gift.createdAt}

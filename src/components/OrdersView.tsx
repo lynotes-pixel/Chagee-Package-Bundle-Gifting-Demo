@@ -59,16 +59,20 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
             Orders & Gift Vouchers
           </h2>
           <p className="text-xs text-slate-500 font-medium mt-0.5">
-            Track sent gifts, bundle passes & store redemptions
+            Track sent gifts, bundle coupons and store redemptions.
           </p>
         </div>
 
         <button
-          onClick={onSendNewGift}
-          className="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shadow-sm flex items-center gap-1.5 transition-all shrink-0"
+          onClick={() => {
+            const el = document.getElementById('orders-list-section');
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth' });
+            }
+          }}
+          className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shadow-sm flex items-center justify-center transition-all shrink-0 cursor-pointer"
         >
-          <Gift className="w-3.5 h-3.5 text-amber-300" />
-          <span>New Gift</span>
+          <span>Track</span>
         </button>
       </div>
 
@@ -94,7 +98,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
       </div>
 
       {/* List */}
-      <div className="space-y-3">
+      <div id="orders-list-section" className="space-y-3">
         {filteredGifts.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-3xl border-2 border-slate-200 p-6 space-y-3">
             <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 text-slate-900 mx-auto flex items-center justify-center text-xl">

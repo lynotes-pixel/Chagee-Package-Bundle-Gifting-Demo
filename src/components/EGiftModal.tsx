@@ -185,6 +185,9 @@ export const EGiftModal: React.FC<EGiftModalProps> = ({
                           alt={item.name}
                           className="w-full h-full object-cover"
                           referrerPolicy="no-referrer"
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).src = '/images/chagee_tea_cup.jpg';
+                          }}
                         />
                         {item.isBestSeller && (
                           <div className="absolute top-1 left-1 bg-rose-600 text-white text-[8px] font-black px-1.5 py-0.5 rounded-full">

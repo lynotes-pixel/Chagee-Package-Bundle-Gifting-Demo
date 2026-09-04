@@ -60,7 +60,7 @@ export const MENU_ITEMS: MenuItem[] = [
     badgeType: 'bestseller',
     nutriGrade: { grade: 'B', sugarPct: '4%' },
     ingredientTheme: 'peach',
-    image: 'https://images.unsplash.com/photo-1558857563-b37cf02cb5be?auto=format&fit=crop&w=600&q=80',
+    image: 'https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=600&q=80',
     description: 'Sweet juicy white peach notes combined with Anxi high-mountain roasted oolong and fresh whole milk.',
     tags: ['Bestseller', 'Fruity'],
     isBestSeller: true,
@@ -175,7 +175,7 @@ export const MENU_ITEMS: MenuItem[] = [
     badge: 'Limited',
     badgeType: 'recommended',
     ingredientTheme: 'deal',
-    image: 'https://images.unsplash.com/photo-1558857563-b37cf02cb5be?auto=format&fit=crop&w=600&q=80',
+    image: 'https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=600&q=80',
     description: 'Select your two favorite fresh milk teas for a sweet afternoon treat.',
   },
 

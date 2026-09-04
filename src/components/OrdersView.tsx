@@ -85,9 +85,6 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
               <Sparkles className="w-3 h-3" />
               <span>Vouchers Wallet</span>
             </div>
-            <h2 className="text-xl font-black text-white tracking-tight leading-tight">
-              My Vouchers & Passes
-            </h2>
             <p className="text-xs text-slate-300 font-medium mt-0.5">
               Tap any voucher below to expand high-res visuals & terms.
             </p>
@@ -99,7 +96,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
               {activePassesCount}
             </div>
             <div className="text-[9px] font-extrabold uppercase tracking-wider text-slate-300 mt-1">
-              Active Passes
+              Active
             </div>
           </div>
         </div>

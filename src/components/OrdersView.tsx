@@ -201,30 +201,36 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                     </p>
 
                     {/* Line 3: Validity & Remaining Passes neatly aligned */}
-                    <div className="flex items-center gap-2 mt-1 whitespace-nowrap">
-                      <span className="inline-flex items-center gap-1 text-[10px] text-slate-500 font-semibold shrink-0">
+                    <div className="flex items-center gap-1.5 mt-1 overflow-hidden">
+                      <span className="inline-flex items-center gap-1 text-[10px] text-slate-500 font-semibold truncate">
                         <Clock className="w-3 h-3 text-amber-500 shrink-0" />
-                        <span>{gift.expiryDate || 'Valid till 31 Dec 2026'}</span>
+                        <span className="truncate">{gift.expiryDate || 'Valid till 31 Dec 2026'}</span>
                       </span>
-                      <span className="text-slate-300 text-[10px]">•</span>
-                      <span className="inline-flex items-center text-[10px] font-black text-indigo-600 shrink-0">
+                      <span className="text-slate-300 text-[10px] shrink-0">•</span>
+                      <span className="inline-flex items-center text-[10px] font-black text-indigo-600 shrink-0 whitespace-nowrap">
                         {gift.remainingVouchers} left
                       </span>
                     </div>
                   </div>
 
-                  {/* Right Column: Price Tag and T&Cs Toggle */}
-                  <div className="flex flex-col items-end justify-between shrink-0 self-stretch py-0.5 pl-1">
+                  {/* Right Column: Price Tag and Dropdown Arrow Button */}
+                  <div className="flex flex-col items-end justify-between shrink-0 self-stretch py-0.5 pl-2">
                     <span className="text-xs font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded-lg whitespace-nowrap">
                       {gift.price > 0 ? `$${gift.price.toFixed(2)}` : 'FREE'}
                     </span>
 
-                    <div className="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-600 hover:text-indigo-700 select-none whitespace-nowrap">
-                      <span>{isExpanded ? 'Hide' : 'T&Cs'}</span>
+                    <div
+                      className={`w-6 h-6 rounded-full flex items-center justify-center transition-all ${
+                        isExpanded
+                          ? 'bg-indigo-600 text-white shadow-xs'
+                          : 'bg-slate-100 hover:bg-slate-200 text-indigo-600'
+                      }`}
+                      title={isExpanded ? 'Collapse' : 'Expand details'}
+                    >
                       {isExpanded ? (
-                        <ChevronUp className="w-3.5 h-3.5" />
+                        <ChevronUp className="w-3.5 h-3.5 stroke-[2.5]" />
                       ) : (
-                        <ChevronDown className="w-3.5 h-3.5" />
+                        <ChevronDown className="w-3.5 h-3.5 stroke-[2.5]" />
                       )}
                     </div>
                   </div>

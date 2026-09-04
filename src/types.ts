@@ -42,7 +42,7 @@ export interface RewardItem {
   chineseName?: string;
   pointsCost: number;
   indicativeValue: string;
-  category: 'drink' | 'voucher' | 'merch';
+  category: 'drink' | 'voucher' | 'merch' | 'dessert' | 'event' | 'deal';
   image: string;
   badge?: string;
   badgeColor?: string;

@@ -53,9 +53,9 @@ export const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
             </span>
           </button>
 
-          {/* 2. Refer Friends */}
+          {/* 2. Invite Friends */}
           <button
-            id="quick-refer-btn"
+            id="quick-invite-btn"
             onClick={onOpenRefer}
             className="flex flex-col items-center justify-center p-1 group hover:opacity-80 active:scale-95 transition-all"
           >
@@ -63,7 +63,7 @@ export const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
               <Users className="w-6 h-6 stroke-[1.5]" />
             </div>
             <span className="text-[11px] font-medium text-neutral-600 group-hover:text-neutral-900 leading-tight">
-              Refer<br />Friends
+              Invite<br />Friends
             </span>
           </button>
 
@@ -186,24 +186,24 @@ export const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
           </div>
         </div>
 
-        {/* Preview of up to 3 Rewards with indicative points required for redemption */}
+        {/* Preview of 3 Rewards with points required */}
         <div className="grid grid-cols-3 gap-2 pt-1">
           {REWARDS_LIST.slice(0, 3).map((reward) => (
             <button
               key={reward.id}
               id={`preview-reward-${reward.id}`}
               onClick={() => onPreviewReward && onPreviewReward(reward.id)}
-              className="group flex flex-col bg-neutral-50/80 hover:bg-emerald-50/40 rounded-2xl p-2 border border-neutral-200/70 hover:border-emerald-400/80 transition-all text-left relative overflow-hidden active:scale-96 shadow-2xs hover:shadow-xs"
+              className="group flex flex-col bg-neutral-50/90 hover:bg-emerald-50/50 rounded-2xl p-2 border border-neutral-200/80 hover:border-emerald-400 transition-all text-left relative overflow-hidden active:scale-97 shadow-2xs hover:shadow-xs"
             >
               {/* Image thumbnail with CHAGEE drink cup, badge and indicative value */}
-              <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-neutral-100 mb-2">
+              <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-neutral-100 mb-1.5">
                 <img
                   src={reward.image}
                   alt={reward.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   referrerPolicy="no-referrer"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
 
                 {/* Top Badge */}
                 {reward.badge && (
@@ -217,19 +217,19 @@ export const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
                 )}
 
                 {/* Bottom Indicative Value Tag */}
-                <span className="absolute bottom-1 right-1 text-[8px] font-bold px-1.5 py-0.5 rounded-md bg-black/65 text-white backdrop-blur-xs">
+                <span className="absolute bottom-1 right-1 text-[8px] font-bold px-1 py-0.5 rounded bg-black/70 text-white backdrop-blur-xs">
                   {reward.indicativeValue}
                 </span>
               </div>
 
-              {/* Liner 1: Text */}
-              <div className="text-[11px] font-extrabold text-neutral-900 leading-tight truncate w-full group-hover:text-emerald-950">
+              {/* Reward Name */}
+              <div className="text-[11px] font-black text-neutral-900 leading-snug group-hover:text-emerald-950 truncate w-full">
                 {reward.name}
               </div>
 
-              {/* Liner 2: Points Balance */}
-              <div className="mt-1.5 flex items-center w-full">
-                <span className="text-[10px] font-black text-emerald-900 bg-emerald-100/90 px-2 py-0.5 rounded-md border border-emerald-200/80 whitespace-nowrap">
+              {/* Indicating Points Required */}
+              <div className="mt-1.5 flex items-center justify-center w-full pt-1 border-t border-neutral-200/60">
+                <span className="text-[10.5px] font-black text-emerald-900 bg-emerald-100/90 px-2 py-0.5 rounded-md border border-emerald-200 whitespace-nowrap text-center w-full">
                   {reward.pointsCost.toLocaleString()} pts
                 </span>
               </div>

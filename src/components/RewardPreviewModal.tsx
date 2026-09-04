@@ -94,24 +94,25 @@ export const RewardPreviewModal: React.FC<RewardPreviewModalProps> = ({
           className="relative w-full max-w-lg bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl z-10 max-h-[92vh] flex flex-col overflow-hidden"
         >
           {/* Header Banner */}
-          <div className="relative bg-gradient-to-r from-emerald-700 via-teal-700 to-emerald-800 text-white px-5 pt-5 pb-6 overflow-hidden">
+          <div className="relative bg-gradient-to-r from-emerald-700 via-teal-700 to-emerald-800 text-white px-5 pt-5 pb-8 sm:pb-9 overflow-hidden">
             <div className="absolute top-0 right-0 w-36 h-36 bg-white/10 rounded-full blur-2xl pointer-events-none" />
 
-            <div className="flex items-center justify-between relative z-10 gap-3">
-              <div className="flex items-center gap-3 min-w-0 flex-1">
-                <div className="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30 text-xl shadow-inner shrink-0">
-                  🎁
+            <div className="flex items-start justify-between relative z-10 gap-3">
+              <div className="flex items-start gap-3 min-w-0 flex-1">
+                {/* Same Award Badge Icon as shown on Homepage */}
+                <div className="w-10 h-10 rounded-xl bg-emerald-600 border border-emerald-400/40 text-white flex items-center justify-center shadow-md shadow-black/10 shrink-0 mt-0.5">
+                  <Award className="w-5 h-5 text-white drop-shadow-xs" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-extrabold text-base sm:text-lg leading-tight text-white truncate">
+                  <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                    <h3 className="font-extrabold text-base sm:text-lg leading-snug text-white whitespace-normal">
                       Redeem your Points
                     </h3>
                     <span className="text-[10px] font-black bg-emerald-400 text-emerald-950 px-2 py-0.5 rounded-full uppercase tracking-wider shrink-0">
                       Rewards
                     </span>
                   </div>
-                  <p className="text-xs text-emerald-100 font-medium whitespace-nowrap overflow-hidden text-ellipsis mt-1 pb-1">
+                  <p className="text-xs text-emerald-100/90 font-medium whitespace-normal mt-2 pb-1">
                     Your Balance: <strong className="text-white font-bold">{userPoints.toLocaleString()} Tea Leaves</strong>
                   </p>
                 </div>
@@ -119,44 +120,81 @@ export const RewardPreviewModal: React.FC<RewardPreviewModalProps> = ({
 
               <button
                 onClick={onClose}
-                className="w-8 h-8 rounded-full bg-black/20 hover:bg-black/30 flex items-center justify-center text-white transition-colors shrink-0 ml-1"
+                aria-label="Close modal"
+                className="w-8 h-8 rounded-full bg-black/20 hover:bg-black/30 flex items-center justify-center text-white transition-colors shrink-0 ml-1 mt-0.5 cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          {/* Quick Tab Selector for the 3 Rewards */}
+          {/* 2-Column Rewards List with Indicating Points Required */}
           {!redeemedReward && (
-            <div className="bg-neutral-100/80 px-3 py-2 border-b border-neutral-200">
-              <div className="text-[10px] font-bold text-neutral-500 uppercase tracking-wider mb-1.5 px-1">
-                Preview Rewards (3 Available):
+            <div className="bg-neutral-100/90 px-3.5 py-2.5 border-b border-neutral-200">
+              <div className="text-[11px] font-bold text-neutral-600 uppercase tracking-wider mb-2 px-0.5">
+                Select Reward ({REWARDS_LIST.length} Available):
               </div>
-              <div className="grid grid-cols-3 gap-1.5">
+              <div className="grid grid-cols-2 gap-2 max-h-56 sm:max-h-64 overflow-y-auto pr-1">
                 {REWARDS_LIST.map((reward) => {
                   const isSelected = reward.id === activeId;
+                  const canAfford = userPoints >= reward.pointsCost;
                   return (
                     <button
                       key={reward.id}
+                      id={`select-reward-${reward.id}`}
                       onClick={() => setActiveId(reward.id)}
-                      className={`py-2 px-1.5 rounded-xl text-center transition-all border flex flex-col items-center justify-center ${
+                      className={`p-2 sm:p-2.5 rounded-2xl text-left transition-all border flex items-center gap-2.5 relative group ${
                         isSelected
-                          ? 'bg-white border-emerald-500 text-emerald-950 shadow-sm ring-2 ring-emerald-500/20'
-                          : 'bg-white/60 border-neutral-200/80 text-neutral-600 hover:bg-white'
+                          ? 'bg-white border-emerald-600 text-neutral-900 shadow-sm ring-2 ring-emerald-500/25'
+                          : 'bg-white/80 border-neutral-200/90 text-neutral-700 hover:bg-white hover:border-neutral-300'
                       }`}
                     >
-                      <span className="text-[11px] font-extrabold truncate w-full block">
-                        {reward.name.replace(/\(.*?\)/g, '').trim()}
-                      </span>
-                      <span
-                        className={`text-[10px] font-black mt-0.5 px-1.5 py-0.5 rounded-full ${
-                          isSelected
-                            ? 'bg-emerald-100 text-emerald-900'
-                            : 'bg-neutral-100 text-neutral-600'
-                        }`}
-                      >
-                        {reward.pointsCost} pts
-                      </span>
+                      {/* Image Thumbnail */}
+                      <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-neutral-100 shrink-0 border border-black/5">
+                        <img
+                          src={reward.image}
+                          alt={reward.name}
+                          className="w-full h-full object-cover"
+                          referrerPolicy="no-referrer"
+                        />
+                        {reward.badge && (
+                          <span
+                            className={`absolute top-0.5 left-0.5 text-[7px] font-black px-1 rounded-xs ${
+                              reward.badgeColor || 'bg-emerald-600 text-white'
+                            }`}
+                          >
+                            {reward.badge}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Info & Points Required */}
+                      <div className="min-w-0 flex-1">
+                        <div className="text-xs font-black text-neutral-900 truncate leading-tight">
+                          {reward.name}
+                        </div>
+                        <div className="text-[10px] text-neutral-500 font-semibold truncate mt-0.5">
+                          {reward.indicativeValue}
+                        </div>
+                        <div className="mt-1 flex items-center gap-1">
+                          <span
+                            className={`text-[10px] font-black px-1.5 py-0.5 rounded-md leading-none ${
+                              isSelected
+                                ? 'bg-emerald-600 text-white'
+                                : canAfford
+                                ? 'bg-emerald-100 text-emerald-900'
+                                : 'bg-neutral-100 text-neutral-600'
+                            }`}
+                          >
+                            {reward.pointsCost.toLocaleString()} pts
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Active indicator */}
+                      {isSelected && (
+                        <div className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-600" />
+                      )}
                     </button>
                   );
                 })}

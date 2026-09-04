@@ -163,9 +163,9 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                 onClick={() => handleToggleExpand(gift.id)}
               >
                 {/* Horizontal Block Header / Row */}
-                <div className="p-3.5 sm:p-4 flex items-center justify-between gap-3">
+                <div className="p-3.5 sm:p-4 flex items-center gap-3">
                   {/* Left: Thumbnail & Badge */}
-                  <div className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-2xl overflow-hidden bg-slate-100 shrink-0 border border-slate-200">
+                  <div className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-2xl overflow-hidden bg-slate-100 shrink-0 border border-slate-200/80">
                     <img
                       src={gift.itemImage}
                       alt={gift.itemTitle}
@@ -191,37 +191,38 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                     </div>
                   </div>
 
-                  {/* Middle: Title, Subtitle & Expiry */}
-                  <div className="flex-1 min-w-0 pr-1">
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <h4 className="font-extrabold text-slate-900 text-xs sm:text-sm line-clamp-1">
-                        {gift.itemTitle}
-                      </h4>
-                    </div>
+                  {/* Middle: Clean Line-by-Line Structured Text */}
+                  <div className="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5">
+                    {/* Line 1: Title */}
+                    <h4 className="font-extrabold text-slate-900 text-[13px] sm:text-sm leading-tight line-clamp-1">
+                      {gift.itemTitle}
+                    </h4>
 
-                    <p className="text-[11px] text-slate-500 font-medium line-clamp-1 mt-0.5">
+                    {/* Line 2: Subtitle / Description */}
+                    <p className="text-[11px] text-slate-500 font-medium leading-tight line-clamp-1 mt-0.5">
                       {gift.itemSubtitle}
                     </p>
 
-                    <div className="flex items-center gap-2 mt-1.5 text-[10px] text-slate-400 font-semibold">
-                      <span className="flex items-center gap-1 text-slate-600 font-bold">
+                    {/* Line 3: Validity & Remaining Passes neatly aligned */}
+                    <div className="flex items-center gap-2 mt-1 whitespace-nowrap">
+                      <span className="inline-flex items-center gap-1 text-[10px] text-slate-500 font-semibold shrink-0">
                         <Clock className="w-3 h-3 text-amber-500 shrink-0" />
                         <span>{gift.expiryDate || 'Valid till 31 Dec 2026'}</span>
                       </span>
-                      <span>·</span>
-                      <span className="text-indigo-600 font-black">
+                      <span className="text-slate-300 text-[10px]">•</span>
+                      <span className="inline-flex items-center text-[10px] font-black text-indigo-600 shrink-0">
                         {gift.remainingVouchers} left
                       </span>
                     </div>
                   </div>
 
-                  {/* Right: Expand indicator & Action status */}
-                  <div className="flex flex-col items-end justify-between shrink-0 h-16 py-0.5">
-                    <span className="text-xs font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded-lg">
+                  {/* Right Column: Price Tag and T&Cs Toggle */}
+                  <div className="flex flex-col items-end justify-between shrink-0 self-stretch py-0.5 pl-1">
+                    <span className="text-xs font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded-lg whitespace-nowrap">
                       {gift.price > 0 ? `$${gift.price.toFixed(2)}` : 'FREE'}
                     </span>
 
-                    <div className="flex items-center gap-1 text-[11px] font-bold text-indigo-600">
+                    <div className="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-600 hover:text-indigo-700 select-none whitespace-nowrap">
                       <span>{isExpanded ? 'Hide' : 'T&Cs'}</span>
                       {isExpanded ? (
                         <ChevronUp className="w-3.5 h-3.5" />

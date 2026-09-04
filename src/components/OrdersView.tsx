@@ -18,19 +18,24 @@ import {
 } from 'lucide-react';
 import { GiftTransaction } from '../types';
 
-// Helper to format dates cleanly into DD MMM (e.g., '15 Nov', '31 Dec', '30 Sep')
+// Helper to format dates cleanly into DD MMM YYYY (e.g., '31 Dec 2026', '15 Nov 2026', '30 Sep 2026')
 function formatFinePrintDate(rawDate?: string): string {
-  if (!rawDate) return '31 Dec';
+  if (!rawDate) return '31 Dec 2026';
   
-  // If it contains "till DD MMM" or "till DD Month"
-  // Match patterns like "Valid till 15 Nov 2026", "15 Nov 2026", "Valid till end of birth month"
+  // If it contains "till DD MMM YYYY" or "DD MMM YYYY"
+  const ddMmmYyyyMatch = rawDate.match(/(\d{1,2}\s+[A-Za-z]{3}\s+\d{4})/i);
+  if (ddMmmYyyyMatch) {
+    return ddMmmYyyyMatch[1];
+  }
+
+  // If it has DD MMM without year, append current/target year 2026
   const ddMmmMatch = rawDate.match(/(\d{1,2}\s+[A-Za-z]{3})/i);
   if (ddMmmMatch) {
-    return ddMmmMatch[1];
+    return `${ddMmmMatch[1]} 2026`;
   }
   
   if (rawDate.toLowerCase().includes('birth month')) {
-    return '30 Sep';
+    return '30 Sep 2026';
   }
 
   // If it's something like "Valid till 30 days from today"
@@ -38,12 +43,12 @@ function formatFinePrintDate(rawDate?: string): string {
     const d = new Date();
     d.setDate(d.getDate() + 30);
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return `${d.getDate()} ${months[d.getMonth()]}`;
+    return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
   }
 
-  // Strip prefix "Valid till" or suffix years
-  const clean = rawDate.replace(/valid till\s*/i, '').replace(/\s*\d{4}/g, '').trim();
-  return clean || '31 Dec';
+  // Strip prefix "Valid till"
+  const clean = rawDate.replace(/valid till\s*/i, '').trim();
+  return clean || '31 Dec 2026';
 }
 
 interface OrdersViewProps {
@@ -219,36 +224,36 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                   {/* Middle: Clean Line-by-Line Structured Text */}
                   <div className="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5">
                     {/* Line 1: Title */}
-                    <h4 className="font-extrabold text-slate-900 text-[13px] sm:text-sm leading-tight line-clamp-1">
+                    <h4 className="font-extrabold text-slate-900 text-[13px] sm:text-sm leading-tight line-clamp-1 pr-1">
                       {gift.itemTitle}
                     </h4>
 
                     {/* Line 2: Subtitle / Description */}
-                    <p className="text-[11px] text-slate-500 font-medium leading-tight line-clamp-1 mt-0.5">
+                    <p className="text-[11px] text-slate-500 font-medium leading-tight line-clamp-1 mt-0.5 pr-1">
                       {gift.itemSubtitle}
                     </p>
 
-                    {/* Line 3: Validity (DD MMM) & Remaining Passes neatly aligned */}
-                    <div className="flex items-center gap-1.5 mt-1 overflow-hidden">
-                      <span className="inline-flex items-center gap-1 text-[10px] text-slate-500 font-semibold shrink-0">
+                    {/* Line 3: Validity (DD MMM YYYY) & Remaining Passes neatly aligned */}
+                    <div className="flex items-center flex-wrap gap-x-1.5 gap-y-0.5 mt-1 text-[10px] leading-none">
+                      <span className="inline-flex items-center gap-1 text-slate-500 font-semibold shrink-0 whitespace-nowrap">
                         <Clock className="w-3 h-3 text-amber-500 shrink-0" />
                         <span>Valid till {formatFinePrintDate(gift.expiryDate)}</span>
                       </span>
-                      <span className="text-slate-300 text-[10px] shrink-0">•</span>
-                      <span className="inline-flex items-center text-[10px] font-black text-indigo-600 shrink-0 whitespace-nowrap">
+                      <span className="text-slate-300 shrink-0 font-bold">•</span>
+                      <span className="inline-flex items-center font-black text-indigo-600 shrink-0 whitespace-nowrap">
                         {gift.remainingVouchers} left
                       </span>
                     </div>
                   </div>
 
                   {/* Right Column: Price Tag and Dropdown Arrow Button */}
-                  <div className="flex flex-col items-end justify-between shrink-0 self-stretch py-0.5 pl-2">
+                  <div className="flex flex-col items-end justify-between shrink-0 self-stretch py-0.5 pl-1 sm:pl-2">
                     <span className="text-xs font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded-lg whitespace-nowrap">
                       {gift.price > 0 ? `$${gift.price.toFixed(2)}` : 'FREE'}
                     </span>
 
                     <div
-                      className={`w-6 h-6 rounded-full flex items-center justify-center transition-all ${
+                      className={`w-6 h-6 rounded-full flex items-center justify-center transition-all shrink-0 ${
                         isExpanded
                           ? 'bg-indigo-600 text-white shadow-xs'
                           : 'bg-slate-100 hover:bg-slate-200 text-indigo-600'

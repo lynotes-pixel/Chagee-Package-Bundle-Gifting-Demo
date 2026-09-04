@@ -1,6 +1,19 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, MapPin, Calculator, Users, Sparkles, Navigation, Award } from 'lucide-react';
+import {
+  X,
+  MapPin,
+  Calculator,
+  Users,
+  Sparkles,
+  Navigation,
+  Award,
+  MessageCircle,
+  MessageSquare,
+  Send,
+  Copy,
+  Check,
+} from 'lucide-react';
 import { STORES_LIST, MENU_ITEMS } from '../data/menuData';
 
 interface InfoModalProps {
@@ -13,12 +26,21 @@ export const InfoModals: React.FC<InfoModalProps> = ({ type, onClose }) => {
   const [calcDrinkId, setCalcDrinkId] = useState(MENU_ITEMS[0].id);
   const [calcSugar, setCalcSugar] = useState(50); // 50%
   const [calcIce, setCalcIce] = useState('less');
+  const [copied, setCopied] = useState(false);
 
   if (!type) return null;
 
   const currentDrink = MENU_ITEMS.find((m) => m.id === calcDrinkId) || MENU_ITEMS[0];
   const baseCalories = currentDrink.calories || 180;
   const calculatedCalories = Math.round(baseCalories * (0.6 + (calcSugar / 100) * 0.4));
+
+  const referralCode = 'JOIN-ALEX3053';
+
+  const handleCopyCode = () => {
+    navigator.clipboard?.writeText(referralCode);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <AnimatePresence>
@@ -38,16 +60,21 @@ export const InfoModals: React.FC<InfoModalProps> = ({ type, onClose }) => {
           className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl z-10 overflow-hidden max-h-[85vh] flex flex-col"
         >
           {/* Header */}
-          <div className="p-4 bg-neutral-50 border-b border-neutral-100 flex items-center justify-between">
-            <h3 className="font-extrabold text-neutral-900 text-base">
-              {type === 'story' && 'CHAGEE Heritage & Tea Story'}
-              {type === 'calc' && 'Tea Calorie Calculator'}
-              {type === 'stores' && 'Singapore Store Locations'}
-              {type === 'refer' && 'Refer Friends & Earn Free Tea'}
-            </h3>
+          <div className="p-4 bg-neutral-50 border-b border-neutral-100 relative flex items-center justify-between min-h-[56px]">
+            {type === 'refer' ? (
+              <h3 className="w-full font-black text-neutral-900 text-lg md:text-xl text-center pr-8 pl-8">
+                Refer Friends
+              </h3>
+            ) : (
+              <h3 className="font-extrabold text-neutral-900 text-base pr-8">
+                {type === 'story' && 'CHAGEE Heritage & Tea Story'}
+                {type === 'calc' && 'Tea Calorie Calculator'}
+                {type === 'stores' && 'Singapore Store Locations'}
+              </h3>
+            )}
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-full bg-neutral-200/60 hover:bg-neutral-200 flex items-center justify-center text-neutral-600 transition-colors"
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-neutral-200/60 hover:bg-neutral-200 flex items-center justify-center text-neutral-600 transition-colors cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
@@ -158,18 +185,91 @@ export const InfoModals: React.FC<InfoModalProps> = ({ type, onClose }) => {
 
             {/* 4. REFER FRIENDS */}
             {type === 'refer' && (
-              <div className="space-y-3 text-center">
-                <div className="w-14 h-14 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto text-2xl">
+              <div className="space-y-4 text-center pb-1">
+                <div className="w-24 h-24 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto text-5xl shadow-sm border border-rose-200/50">
                   🎁
                 </div>
-                <h4 className="text-base font-black text-neutral-900">
-                  Invite Friends & Get $5 Voucher
-                </h4>
-                <p className="text-xs text-neutral-500">
-                  Share your referral link. When your friend makes their first order or receives an eGift bundle, you both get 500 Tea Leaves!
-                </p>
-                <div className="p-3 bg-neutral-100 rounded-xl font-mono text-xs font-bold text-neutral-800 select-all border border-neutral-200">
-                  CHAGEE-FRIEND-ALEX2026
+
+                <div className="space-y-1.5">
+                  <h4 className="text-lg font-black text-neutral-900">
+                    Invite Friends & Get 50% OFF Drink
+                  </h4>
+                  <p className="text-xs text-neutral-500 max-w-[320px] mx-auto leading-relaxed">
+                    Share your referral link and invite your friend to join as a CHAGEE member. Get rewarded when your friend makes their first order.
+                  </p>
+                </div>
+
+                {/* Referral Code Box */}
+                <div
+                  onClick={handleCopyCode}
+                  className="p-3.5 bg-neutral-100/90 hover:bg-neutral-100 rounded-2xl border border-neutral-200 flex items-center justify-between px-4 cursor-pointer transition-colors group shadow-2xs"
+                  title="Click to copy code"
+                >
+                  <span className="font-mono text-sm font-black text-neutral-900 tracking-wider select-all">
+                    {referralCode}
+                  </span>
+                  <div className="flex items-center gap-1 text-[11px] font-sans font-bold text-rose-600 group-hover:text-rose-700">
+                    {copied ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-600" />
+                        <span className="text-emerald-600">Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5" />
+                        <span>Copy</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                {/* Social Share Links (Whatsapp, SMS, Telegram) */}
+                <div className="pt-1">
+                  <p className="text-[11px] font-bold text-neutral-400 mb-2">Share via</p>
+                  <div className="grid grid-cols-3 gap-2.5">
+                    {/* Whatsapp */}
+                    <a
+                      href={`https://api.whatsapp.com/send?text=${encodeURIComponent(
+                        'Join CHAGEE with my referral code JOIN-ALEX3053 to get 50% OFF your first drink! https://chagee.com.sg'
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex flex-col items-center justify-center p-3 rounded-2xl bg-emerald-50/90 hover:bg-emerald-100 border border-emerald-200/80 transition-all group cursor-pointer"
+                    >
+                      <div className="w-9 h-9 rounded-full bg-[#25D366] text-white flex items-center justify-center mb-1.5 shadow-xs group-hover:scale-105 transition-transform">
+                        <MessageCircle className="w-4.5 h-4.5 fill-current" />
+                      </div>
+                      <span className="text-xs font-bold text-neutral-800">Whatsapp</span>
+                    </a>
+
+                    {/* SMS */}
+                    <a
+                      href={`sms:?&body=${encodeURIComponent(
+                        'Join CHAGEE with my referral code JOIN-ALEX3053 to get 50% OFF your first drink! https://chagee.com.sg'
+                      )}`}
+                      className="flex flex-col items-center justify-center p-3 rounded-2xl bg-amber-50/90 hover:bg-amber-100 border border-amber-200/80 transition-all group cursor-pointer"
+                    >
+                      <div className="w-9 h-9 rounded-full bg-amber-500 text-white flex items-center justify-center mb-1.5 shadow-xs group-hover:scale-105 transition-transform">
+                        <MessageSquare className="w-4.5 h-4.5 fill-current" />
+                      </div>
+                      <span className="text-xs font-bold text-neutral-800">SMS</span>
+                    </a>
+
+                    {/* Telegram */}
+                    <a
+                      href={`https://t.me/share/url?url=${encodeURIComponent('https://chagee.com.sg')}&text=${encodeURIComponent(
+                        'Join CHAGEE with my referral code JOIN-ALEX3053 to get 50% OFF your first drink!'
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex flex-col items-center justify-center p-3 rounded-2xl bg-sky-50/90 hover:bg-sky-100 border border-sky-200/80 transition-all group cursor-pointer"
+                    >
+                      <div className="w-9 h-9 rounded-full bg-[#0088cc] text-white flex items-center justify-center mb-1.5 shadow-xs group-hover:scale-105 transition-transform">
+                        <Send className="w-4 h-4 text-white -rotate-12 translate-x-0.5 -translate-y-0.5" />
+                      </div>
+                      <span className="text-xs font-bold text-neutral-800">Telegram</span>
+                    </a>
+                  </div>
                 </div>
               </div>
             )}

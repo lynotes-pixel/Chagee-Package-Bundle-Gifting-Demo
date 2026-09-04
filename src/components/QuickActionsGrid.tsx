@@ -166,7 +166,7 @@ export const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
             Turn your Tea Leaves into drinks & exclusive merch
           </p>
 
-          {/* Line 3: 1-Liner with Points Balance on left and Preview All button on right */}
+          {/* Line 3: 1-Liner with Points Balance on left and View All button on right */}
           <div className="flex items-center justify-between pt-1.5 border-t border-neutral-100 gap-2">
             <div className="flex items-center gap-1.5 text-xs text-neutral-700 min-w-0">
               <span className="font-semibold text-neutral-500 whitespace-nowrap">Points balance:</span>
@@ -176,11 +176,11 @@ export const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
             </div>
 
             <button
-              id="preview-all-rewards-btn"
+              id="view-all-rewards-btn"
               onClick={() => onPreviewReward && onPreviewReward(REWARDS_LIST[0].id)}
-              className="text-xs font-extrabold text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100/80 px-2.5 py-1 rounded-full transition-colors flex items-center gap-0.5 group shrink-0"
+              className="text-xs font-extrabold text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100/80 px-2.5 py-1 rounded-full transition-colors flex items-center gap-0.5 group shrink-0 cursor-pointer"
             >
-              <span>Preview All</span>
+              <span>View All</span>
               <ChevronRight className="w-3.5 h-3.5 text-emerald-600 group-hover:translate-x-0.5 transition-transform" />
             </button>
           </div>

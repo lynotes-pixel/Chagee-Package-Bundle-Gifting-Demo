@@ -1,12 +1,9 @@
 import React from 'react';
-import { Smartphone, Gift, Sparkles, Monitor } from 'lucide-react';
-import { GiftTransaction } from '../types';
+import { Smartphone, Gift, Monitor } from 'lucide-react';
 
 interface TopSimulatorBarProps {
   currentViewMode: 'sender' | 'recipient';
   onChangeViewMode: (mode: 'sender' | 'recipient') => void;
-  activeGift: GiftTransaction | null;
-  onOpenGiftBox: () => void;
   isPhoneFrame: boolean;
   onTogglePhoneFrame: () => void;
   unreadGiftsCount: number;
@@ -15,8 +12,6 @@ interface TopSimulatorBarProps {
 export const TopSimulatorBar: React.FC<TopSimulatorBarProps> = ({
   currentViewMode,
   onChangeViewMode,
-  activeGift,
-  onOpenGiftBox,
   isPhoneFrame,
   onTogglePhoneFrame,
   unreadGiftsCount,
@@ -54,18 +49,6 @@ export const TopSimulatorBar: React.FC<TopSimulatorBarProps> = ({
           )}
         </button>
       </div>
-
-      {/* Quick Launch Recipient Gift Prompt */}
-      {activeGift && (
-        <button
-          id="quick-unboxing-trigger-btn"
-          onClick={onOpenGiftBox}
-          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl bg-gradient-to-r from-indigo-500 via-purple-500 to-amber-400 text-white font-black hover:brightness-110 active:scale-95 transition-all shadow-md border border-white/20"
-        >
-          <Sparkles className="w-3.5 h-3.5 text-amber-200 animate-spin" />
-          <span>Bento Prompt: "You've Got a Gift" (Tap to Unbox)</span>
-        </button>
-      )}
 
       {/* Frame Toggle */}
       <div className="flex items-center gap-2">

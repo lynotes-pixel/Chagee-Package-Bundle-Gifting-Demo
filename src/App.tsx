@@ -195,12 +195,6 @@ export default function App() {
       <TopSimulatorBar
         currentViewMode={currentViewMode}
         onChangeViewMode={(mode) => setCurrentViewMode(mode)}
-        activeGift={activeGiftForUnboxing}
-        onOpenGiftBox={() => {
-          if (activeGiftForUnboxing) {
-            setIsUnboxingModalOpen(true);
-          }
-        }}
         isPhoneFrame={isPhoneFrame}
         onTogglePhoneFrame={() => setIsPhoneFrame(!isPhoneFrame)}
         unreadGiftsCount={unreadGiftsCount}

@@ -74,7 +74,7 @@ export const MeProfileView: React.FC<MeProfileViewProps> = ({
               <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 group-hover:text-indigo-300 transition-all" />
             </div>
             <div className="text-[10px] font-black uppercase tracking-wider text-slate-400 group-hover:text-indigo-200 transition-colors">
-              Active Passes
+              Active Coupons
             </div>
           </button>
         </div>

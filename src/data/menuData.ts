@@ -441,7 +441,7 @@ export const INITIAL_GIFT_TRANSACTIONS: GiftTransaction[] = [
     giftCode: 'CHG-BDAY-3391',
     createdAt: '3 days ago',
     opened: true,
-    expiryDate: 'Valid till end of birth month',
+    expiryDate: 'Valid till 30 Sep',
     voucherCategory: 'birthday',
     terms: [
       'Complimentary 1 Large handcrafted beverage of your choice from full menu.',

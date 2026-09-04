@@ -18,6 +18,34 @@ import {
 } from 'lucide-react';
 import { GiftTransaction } from '../types';
 
+// Helper to format dates cleanly into DD MMM (e.g., '15 Nov', '31 Dec', '30 Sep')
+function formatFinePrintDate(rawDate?: string): string {
+  if (!rawDate) return '31 Dec';
+  
+  // If it contains "till DD MMM" or "till DD Month"
+  // Match patterns like "Valid till 15 Nov 2026", "15 Nov 2026", "Valid till end of birth month"
+  const ddMmmMatch = rawDate.match(/(\d{1,2}\s+[A-Za-z]{3})/i);
+  if (ddMmmMatch) {
+    return ddMmmMatch[1];
+  }
+  
+  if (rawDate.toLowerCase().includes('birth month')) {
+    return '30 Sep';
+  }
+
+  // If it's something like "Valid till 30 days from today"
+  if (rawDate.toLowerCase().includes('days from today')) {
+    const d = new Date();
+    d.setDate(d.getDate() + 30);
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return `${d.getDate()} ${months[d.getMonth()]}`;
+  }
+
+  // Strip prefix "Valid till" or suffix years
+  const clean = rawDate.replace(/valid till\s*/i, '').replace(/\s*\d{4}/g, '').trim();
+  return clean || '31 Dec';
+}
+
 interface OrdersViewProps {
   giftsList: GiftTransaction[];
   onOpenStoreRedeem: (gift: GiftTransaction) => void;
@@ -200,11 +228,11 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                       {gift.itemSubtitle}
                     </p>
 
-                    {/* Line 3: Validity & Remaining Passes neatly aligned */}
+                    {/* Line 3: Validity (DD MMM) & Remaining Passes neatly aligned */}
                     <div className="flex items-center gap-1.5 mt-1 overflow-hidden">
-                      <span className="inline-flex items-center gap-1 text-[10px] text-slate-500 font-semibold truncate">
+                      <span className="inline-flex items-center gap-1 text-[10px] text-slate-500 font-semibold shrink-0">
                         <Clock className="w-3 h-3 text-amber-500 shrink-0" />
-                        <span className="truncate">{gift.expiryDate || 'Valid till 31 Dec 2026'}</span>
+                        <span>Valid till {formatFinePrintDate(gift.expiryDate)}</span>
                       </span>
                       <span className="text-slate-300 text-[10px] shrink-0">•</span>
                       <span className="inline-flex items-center text-[10px] font-black text-indigo-600 shrink-0 whitespace-nowrap">

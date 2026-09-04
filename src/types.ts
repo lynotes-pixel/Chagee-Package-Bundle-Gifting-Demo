@@ -78,6 +78,9 @@ export interface GiftTransaction {
   giftCode: string;
   createdAt: string;
   opened: boolean;
+  expiryDate?: string;
+  terms?: string[];
+  voucherCategory?: 'drink' | 'bundle' | 'cash' | 'upgrade' | 'birthday';
   redeemedHistory: Array<{
     date: string;
     storeName: string;

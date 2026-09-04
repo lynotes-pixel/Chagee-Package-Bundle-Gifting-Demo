@@ -174,6 +174,9 @@ export default function App() {
       giftCode: `CHG-RWD-${Math.floor(100000 + Math.random() * 900000)}`,
       createdAt: 'Just now',
       opened: true,
+      expiryDate: 'Valid till 30 days from today',
+      terms: reward.terms,
+      voucherCategory: 'drink',
       redeemedHistory: [],
     };
 
@@ -268,6 +271,10 @@ export default function App() {
               <HeaderBanner
                 onScanQR={() => setInfoModalType('stores')}
                 onViewVouchers={() => setActiveTab('orders')}
+                onOpenRewards={() => {
+                  setSelectedRewardId('reward-tea');
+                  setIsRewardModalOpen(true);
+                }}
                 onOpenBundle={() => {
                   setSelectedBundleId('bundle-10');
                   setIsBundleModalOpen(true);
@@ -369,6 +376,12 @@ export default function App() {
               }}
               onOpenEGift={() => setIsEGiftModalOpen(true)}
               onViewOrders={() => setActiveTab('orders')}
+              onOpenRewards={() => {
+                setSelectedRewardId('reward-tea');
+                setIsRewardModalOpen(true);
+              }}
+              teaLeaves={currentViewMode === 'recipient' ? 1420 : userPoints}
+              activePassesCount={giftsList.filter((g) => g.remainingVouchers > 0).length}
             />
           )}
         </div>

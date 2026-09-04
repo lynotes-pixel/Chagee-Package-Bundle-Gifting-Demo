@@ -5,6 +5,7 @@ interface HeaderBannerProps {
   onScanQR?: () => void;
   onViewVouchers?: () => void;
   onOpenBundle?: () => void;
+  onOpenRewards?: () => void;
   userName?: string;
   userTier?: string;
   teaLeaves?: number;
@@ -15,6 +16,7 @@ export const HeaderBanner: React.FC<HeaderBannerProps> = ({
   onScanQR,
   onViewVouchers,
   onOpenBundle,
+  onOpenRewards,
   userName = 'friend',
   userTier = 'CHA Master',
   teaLeaves = 2940,
@@ -154,19 +156,27 @@ export const HeaderBanner: React.FC<HeaderBannerProps> = ({
 
             <div className="flex items-center gap-6 mt-2">
               <div>
-                <div className="text-lg font-black text-neutral-900 leading-tight">
-                  {teaLeaves}<span className="text-[#3b82f6] font-bold text-xs ml-0.2">°</span>
-                </div>
-                <p className="text-[9px] font-bold tracking-wider text-neutral-400 uppercase">
-                  TEA LEAVES
-                </p>
+                <button
+                  id="view-tea-leaves-btn"
+                  onClick={onOpenRewards}
+                  className="text-left group cursor-pointer"
+                  title="View Rewards"
+                >
+                  <div className="text-lg font-black text-neutral-900 leading-tight group-hover:text-amber-600 transition-colors">
+                    {teaLeaves}<span className="text-[#3b82f6] font-bold text-xs ml-0.2">°</span>
+                  </div>
+                  <p className="text-[9px] font-bold tracking-wider text-neutral-400 uppercase group-hover:text-amber-600 transition-colors">
+                    TEA LEAVES
+                  </p>
+                </button>
               </div>
 
               <div>
                 <button
                   id="view-vouchers-btn"
                   onClick={onViewVouchers}
-                  className="text-left group"
+                  className="text-left group cursor-pointer"
+                  title="View Vouchers Wallet"
                 >
                   <div className="text-lg font-black text-neutral-900 leading-tight group-hover:text-[#e45b78] transition-colors">
                     {vouchersCount}<span className="text-[#3b82f6] font-bold text-xs ml-0.2">°</span>

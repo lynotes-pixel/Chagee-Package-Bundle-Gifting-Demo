@@ -12,10 +12,16 @@ interface MeProfileViewProps {
   onOpenBundle?: () => void;
   onOpenEGift?: () => void;
   onViewOrders: () => void;
+  onOpenRewards?: () => void;
+  teaLeaves?: number;
+  activePassesCount?: number;
 }
 
 export const MeProfileView: React.FC<MeProfileViewProps> = ({
   onViewOrders,
+  onOpenRewards,
+  teaLeaves = 2940,
+  activePassesCount = 7,
 }) => {
   return (
     <div className="p-4 space-y-3.5 pb-24">
@@ -40,15 +46,37 @@ export const MeProfileView: React.FC<MeProfileViewProps> = ({
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 mt-4 pt-3.5 border-t border-slate-800 text-center">
-          <div className="bg-slate-800/80 p-2.5 rounded-2xl border border-slate-700">
-            <div className="text-lg font-black text-amber-400">2,940°</div>
-            <div className="text-[10px] font-black uppercase tracking-wider text-slate-400">Tea Leaves Points</div>
-          </div>
-          <div className="bg-slate-800/80 p-2.5 rounded-2xl border border-slate-700">
-            <div className="text-lg font-black text-white">7</div>
-            <div className="text-[10px] font-black uppercase tracking-wider text-slate-400">Active Passes</div>
-          </div>
+        {/* Tappable Tea Leaves Points & Active Passes Cards */}
+        <div className="grid grid-cols-2 gap-2.5 mt-4 pt-3.5 border-t border-slate-800 text-center">
+          <button
+            type="button"
+            id="me-tea-leaves-points-btn"
+            onClick={onOpenRewards}
+            className="group bg-slate-800/80 hover:bg-slate-800 p-2.5 rounded-2xl border border-slate-700 hover:border-amber-400/50 transition-all text-center cursor-pointer active:scale-98 shadow-xs"
+          >
+            <div className="text-lg font-black text-amber-400 group-hover:scale-105 transition-transform flex items-center justify-center gap-1">
+              <span>{teaLeaves.toLocaleString()}°</span>
+              <ChevronRight className="w-3.5 h-3.5 text-amber-400/70 group-hover:translate-x-0.5 transition-transform" />
+            </div>
+            <div className="text-[10px] font-black uppercase tracking-wider text-slate-400 group-hover:text-amber-300 transition-colors">
+              Tea Leaves Points
+            </div>
+          </button>
+
+          <button
+            type="button"
+            id="me-active-passes-btn"
+            onClick={onViewOrders}
+            className="group bg-slate-800/80 hover:bg-slate-800 p-2.5 rounded-2xl border border-slate-700 hover:border-indigo-400/50 transition-all text-center cursor-pointer active:scale-98 shadow-xs"
+          >
+            <div className="text-lg font-black text-white group-hover:text-indigo-300 group-hover:scale-105 transition-transform flex items-center justify-center gap-1">
+              <span>{activePassesCount}</span>
+              <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 group-hover:text-indigo-300 transition-all" />
+            </div>
+            <div className="text-[10px] font-black uppercase tracking-wider text-slate-400 group-hover:text-indigo-200 transition-colors">
+              Active Passes
+            </div>
+          </button>
         </div>
       </div>
 

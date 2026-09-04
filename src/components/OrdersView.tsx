@@ -193,9 +193,9 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                 onClick={() => handleToggleExpand(gift.id)}
               >
                 {/* Horizontal Block Header / Row */}
-                <div className="p-3.5 sm:p-4 flex items-center gap-3">
+                <div className="p-4 sm:p-4.5 flex items-center gap-3.5 min-h-[92px] sm:min-h-[96px]">
                   {/* Left: Thumbnail & Badge */}
-                  <div className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-2xl overflow-hidden bg-slate-100 shrink-0 border border-slate-200/80">
+                  <div className="relative w-18 h-18 sm:w-20 sm:h-20 rounded-2xl overflow-hidden bg-slate-100 shrink-0 border border-slate-200/80 shadow-2xs">
                     <img
                       src={gift.itemImage}
                       alt={gift.itemTitle}
@@ -222,26 +222,27 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                   </div>
 
                   {/* Middle: Clean Line-by-Line Structured Text */}
-                  <div className="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5">
+                  <div className="flex-1 min-w-0 flex flex-col justify-center gap-1 self-stretch py-0.5">
                     {/* Line 1: Title */}
-                    <h4 className="font-extrabold text-slate-900 text-[13px] sm:text-sm leading-tight line-clamp-1 pr-1">
+                    <h4 className="font-extrabold text-slate-900 text-[13px] sm:text-sm leading-snug line-clamp-1 pr-1">
                       {gift.itemTitle}
                     </h4>
 
                     {/* Line 2: Subtitle / Description */}
-                    <p className="text-[11px] text-slate-500 font-medium leading-tight line-clamp-1 mt-0.5 pr-1">
+                    <p className="text-[11px] text-slate-500 font-medium leading-tight line-clamp-1 pr-1">
                       {gift.itemSubtitle}
                     </p>
 
-                    {/* Line 3: Validity (DD MMM YYYY) & Remaining Passes neatly aligned */}
-                    <div className="flex items-center flex-wrap gap-x-1.5 gap-y-0.5 mt-1 text-[10px] leading-none">
-                      <span className="inline-flex items-center gap-1 text-slate-500 font-semibold shrink-0 whitespace-nowrap">
-                        <Clock className="w-3 h-3 text-amber-500 shrink-0" />
-                        <span>Valid till {formatFinePrintDate(gift.expiryDate)}</span>
-                      </span>
-                      <span className="text-slate-300 shrink-0 font-bold">•</span>
-                      <span className="inline-flex items-center font-black text-indigo-600 shrink-0 whitespace-nowrap">
-                        {gift.remainingVouchers} left
+                    {/* Line 3: Validity Date */}
+                    <div className="flex items-center gap-1.5 text-[10px] text-slate-500 font-semibold mt-0.5">
+                      <Clock className="w-3 h-3 text-amber-500 shrink-0" />
+                      <span className="whitespace-nowrap">Valid till {formatFinePrintDate(gift.expiryDate)}</span>
+                    </div>
+
+                    {/* Line 4: Spaced out Balance pill */}
+                    <div className="mt-0.5">
+                      <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-indigo-50 border border-indigo-100 text-[10px] font-black text-indigo-700 tracking-tight">
+                        Balance: {gift.remainingVouchers}
                       </span>
                     </div>
                   </div>
